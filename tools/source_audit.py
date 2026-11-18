@@ -25,13 +25,13 @@ OVERRIDE_PATTERN = (
 # The original 'override' profile intentionally remains backward-compatible, but
 # includes fuse status/option names that are NOT evidence of an override.
 FUSE_REGISTER_PATTERN = (
-    r'(?:fuse_(?:zb_)?(?:opt|status|ctrl|feature|spare)\\w*|'
-    r'fuse_(?:shadow|override)\\w*|(?:gpu|gpuarch)\\w*fuse\\w*)'
+    r'(?:fuse_(?:zb_)?(?:opt|status|ctrl|feature|spare)\w*|'
+    r'fuse_(?:shadow|override)\w*|(?:gpu|gpuarch)\w*fuse\w*)'
 )
 DIRECT_OVERRIDE_PATTERN = (
-    r'(?:disable_sw_override|sw_?override\\w*|shadow_?fuse\\w*|'
-    r'fuse_?shadow\\w*|fuse_(?:zb_)?(?:ctrl_opt|status_opt)\\w*|'
-    r'ctrl_opt_(?:gpc|tpc|ltc|l2)\\w*)'
+    r'(?:disable_sw_override|sw_?override\w*|shadow_?fuse\w*|'
+    r'fuse_?shadow\w*|fuse_(?:zb_)?(?:ctrl_opt|status_opt)\w*|'
+    r'ctrl_opt_(?:gpc|tpc|ltc|l2)\w*)'
 )
 PROFILES = {
     'broad': BROAD_PATTERN,
