@@ -4,7 +4,7 @@
 
 ## Provenance
 
-Reference checkout: NVIDIA [open-gpu-kernel-modules at e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9](https://github.com/NVIDIA/open-gpu-kernel-modules/tree/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9), the public main-branch commit examined on 2026-11-18. **The researcher's local NVIDIA checkout may be at a different commit.** Check with \`git -C open-gpu-kernel-modules rev-parse HEAD\` and cite that actual SHA for local scans.
+Reference checkout: NVIDIA [open-gpu-kernel-modules at e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9](https://github.com/NVIDIA/open-gpu-kernel-modules/tree/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9), the public main-branch commit examined on 2026-11-18. **The researcher's local NVIDIA checkout may be at a different commit.** Check with `git -C open-gpu-kernel-modules rev-parse HEAD` and cite that actual SHA for local scans.
 
 This catalog records *declarations and comments in public headers*. They do not establish that a retail RTX 5090 running Windows can invoke any interface, that returned masks are physical eFuse values, or that a writable override exists.
 
@@ -12,15 +12,15 @@ This catalog records *declarations and comments in public headers*. They do not 
 
 | Symbol/field | Declared in the pinned source | What it supports | Critical limitation |
 |---|---|---|---|
-| \`NV2080_CTRL_CMD_GR_GET_SM_TO_GPC_TPC_MAPPINGS\` | [ctrl2080gr.h lines 763–787](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/common/sdk/nvidia/inc/ctrl/ctrl2080/ctrl2080gr.h#L763-L787) | An array of SM-to-GPC/TPC mappings | No explicit claim of raw factory fuse values |
-| \`NV2080_CTRL_CMD_GR_GET_GLOBAL_SM_ORDER\` | [ctrl2080gr.h lines 1144–1214](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/common/sdk/nvidia/inc/ctrl/ctrl2080/ctrl2080gr.h#L1144-L1214) | Enabled SM/GPC/TPC **logical** ordering | Header explicitly says *post-floorsweeping*; IDs can be renumbered |
-| \`NV2080_CTRL_CMD_GR_GET_GPC_MASK\` | [ctrl2080gr.h near line 1432](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/common/sdk/nvidia/inc/ctrl/ctrl2080/ctrl2080gr.h#L1418-L1442) | Declares a GPC-mask query | Mask origin, hardware mapping and GB202 access need verification |
-| \`NV2080_CTRL_CMD_GR_GET_TPC_MASK\` | [ctrl2080gr.h lines 1450–1468](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/common/sdk/nvidia/inc/ctrl/ctrl2080/ctrl2080gr.h#L1450-L1468) | Enabled TPC mask for a specified GPC | Not an eFuse-read interface |
-| \`NV2080_CTRL_CMD_GR_GET_PHYS_GPC_MASK\` | [ctrl2080gr.h near line 1764](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/common/sdk/nvidia/inc/ctrl/ctrl2080/ctrl2080gr.h#L1755-L1775) | A *physical GPC mask* query is declared | Physical mapping is not proof of raw fuse state or override |
-| \`NV2080_CTRL_INTERNAL_STATIC_GR_FLOORSWEEPING_MASKS\` | [ctrl2080internal.h lines 311–348](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/common/sdk/nvidia/inc/ctrl/ctrl2080/ctrl2080internal.h#L311-L348) | Contains \`gpcMask\`, \`tpcMask[]\`, \`tpcCount[]\`, \`physGpcMask\`, \`physGfxGpcMask\` | Internal static interface; user-space availability and fuse provenance unknown |
-| \`NV2080_CTRL_CMD_INTERNAL_STATIC_KGR_GET_FLOORSWEEPING_MASKS\` | [ctrl2080internal.h lines 350–363](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/common/sdk/nvidia/inc/ctrl/ctrl2080/ctrl2080internal.h#L350-L363) | A static floorsweeping-mask control call is declared | Does not imply permission to call it on a GeForce device |
+| `NV2080_CTRL_CMD_GR_GET_SM_TO_GPC_TPC_MAPPINGS` | [ctrl2080gr.h lines 763–787](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/common/sdk/nvidia/inc/ctrl/ctrl2080/ctrl2080gr.h#L763-L787) | An array of SM-to-GPC/TPC mappings | No explicit claim of raw factory fuse values |
+| `NV2080_CTRL_CMD_GR_GET_GLOBAL_SM_ORDER` | [ctrl2080gr.h lines 1144–1214](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/common/sdk/nvidia/inc/ctrl/ctrl2080/ctrl2080gr.h#L1144-L1214) | Enabled SM/GPC/TPC **logical** ordering | Header explicitly says *post-floorsweeping*; IDs can be renumbered |
+| `NV2080_CTRL_CMD_GR_GET_GPC_MASK` | [ctrl2080gr.h near line 1432](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/common/sdk/nvidia/inc/ctrl/ctrl2080/ctrl2080gr.h#L1418-L1442) | Declares a GPC-mask query | Mask origin, hardware mapping and GB202 access need verification |
+| `NV2080_CTRL_CMD_GR_GET_TPC_MASK` | [ctrl2080gr.h lines 1450–1468](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/common/sdk/nvidia/inc/ctrl/ctrl2080/ctrl2080gr.h#L1450-L1468) | Enabled TPC mask for a specified GPC | Not an eFuse-read interface |
+| `NV2080_CTRL_CMD_GR_GET_PHYS_GPC_MASK` | [ctrl2080gr.h near line 1764](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/common/sdk/nvidia/inc/ctrl/ctrl2080/ctrl2080gr.h#L1755-L1775) | A *physical GPC mask* query is declared | Physical mapping is not proof of raw fuse state or override |
+| `NV2080_CTRL_INTERNAL_STATIC_GR_FLOORSWEEPING_MASKS` | [ctrl2080internal.h lines 311–348](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/common/sdk/nvidia/inc/ctrl/ctrl2080/ctrl2080internal.h#L311-L348) | Contains `gpcMask`, `tpcMask[]`, `tpcCount[]`, `physGpcMask`, `physGfxGpcMask` | Internal static interface; user-space availability and fuse provenance unknown |
+| `NV2080_CTRL_CMD_INTERNAL_STATIC_KGR_GET_FLOORSWEEPING_MASKS` | [ctrl2080internal.h lines 350–363](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/common/sdk/nvidia/inc/ctrl/ctrl2080/ctrl2080internal.h#L350-L363) | A static floorsweeping-mask control call is declared | Does not imply permission to call it on a GeForce device |
 
-In the static floorsweeping structure, NVIDIA's comments specify that \`tpcMask[]\` is indexed by **logical GPC ID for MIG** and **physical GPC ID for non-MIG**, while \`tpcCount[]\` is always indexed by logical GPC ID. These semantics are crucial when comparing masks across devices.
+In the static floorsweeping structure, NVIDIA's comments specify that `tpcMask[]` is indexed by **logical GPC ID for MIG** and **physical GPC ID for non-MIG**, while `tpcCount[]` is always indexed by logical GPC ID. These semantics are crucial when comparing masks across devices.
 
 ## Evidence classification
 
@@ -33,19 +33,34 @@ In the static floorsweeping structure, NVIDIA's comments specify that \`tpcMask[
 
 Update the parent research repository and run:
 
-\`\`\`powershell
+```powershell
 git pull --ff-only
 python -m unittest discover -s tests -v
 git -C open-gpu-kernel-modules rev-parse HEAD
 python tools/source_audit.py open-gpu-kernel-modules --profile focused --path-glob "*ctrl2080gr.h" --path-glob "*ctrl2080internal.h" --max-matches 5000 --output reports/topology-headers.json
 $report = Get-Content reports/topology-headers.json -Raw | ConvertFrom-Json
 $report | Select-Object source_commit, scan_profile, match_count, may_be_truncated
-\`\`\`
+```
 
-For a wider search, omit \`--path-glob\` but retain \`--profile focused\`. The \`override\` profile scans for candidate source-code terms, but *even a matching symbol is not evidence of a usable GB202 override*. A negative scan cannot prove absence of hardware mechanisms.
+For a wider search, omit `--path-glob` but retain `--profile focused`. The `override` profile scans for candidate source-code terms, but *even a matching symbol is not evidence of a usable GB202 override*. A negative scan cannot prove absence of hardware mechanisms.
 
 ## Next research tasks
 
 1. Map which declarations are used in publicly available driver implementations, with source revision and call-site references.
 2. Determine whether any read-only, documented interfaces are available on a retail Windows 11 RTX 5090; avoid arbitrary MMIO and privileged writes.
 3. Keep physical/effective/fuse-derived classifications separate in the evidence log.
+
+## Confirmed implementation data flow (2026-11-18)
+
+Tracing the public C implementation provides stronger evidence than the header declarations alone:
+
+1. **Static-information acquisition:** `kgraphicsLoadStaticInfo_KERNEL` obtains an internal RM API interface and executes `pRmApi->Control(..., NV2080_CTRL_CMD_INTERNAL_STATIC_KGR_GET_FLOORSWEEPING_MASKS, ...)` [lines 1126–1164 and 1257–1268](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/nvidia/src/kernel/gpu/gr/kernel_graphics.c#L1126-L1271). This is an internal privileged driver path, not an invitation for a user-mode CUDA client to invoke the control.
+2. **Storage:** when the call succeeds, the returned `floorsweepingMasks[grIdx]` structure is copied into `pPrivate->staticInfo.floorsweepingMasks` [lines 1269–1271](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/nvidia/src/kernel/gpu/gr/kernel_graphics.c#L1269-L1271). In other paths, cached virtual static information is copied from `pVSI` [lines 890–895](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/nvidia/src/kernel/gpu/gr/kernel_graphics.c#L890-L895).
+3. **Query GPC/TPC masks:** `subdeviceCtrlCmdKGrGetGpcMask_IMPL` and the related TPC-mask path obtain values from cached floorsweeping structures, with MIG-dependent behavior [lines 3544–3589](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/nvidia/src/kernel/gpu/gr/kernel_graphics.c#L3544-L3589) and [lines 3591–3643](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/nvidia/src/kernel/gpu/gr/kernel_graphics.c#L3591-L3643).
+4. **Physical GPC reporting:** the `subdeviceCtrlCmdKGrGetPhysGpcMask_IMPL` path assigns `pParams->gpcMask = pKernelGraphicsStaticInfo->floorsweepingMasks.physGpcMask` [lines 3874–3881](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/nvidia/src/kernel/gpu/gr/kernel_graphics.c#L3874-L3881).
+
+**Conclusion supported by this evidence:** the publicly visible kernel path consumes an internal, preconstructed floorsweeping configuration and subsequently serves queries from cached values. It does **not** show the ultimate origin of those values (eFuse hardware vs firmware-prepared effective masks), authorize writes, or demonstrate a GB202 override.
+
+**Next tracing question:** where is `NV2080_CTRL_CMD_INTERNAL_STATIC_KGR_GET_FLOORSWEEPING_MASKS` implemented/serviced on production GB202? The publicly indexed source search finds the C-side caller and the header declaration, but not a public implementation of the control's provider. This is a *coverage gap in inspected public source*, not proof the provider is inaccessible or that no override exists.
+
+**Validation boundary:** don't attempt undocumented MMIO, GSP RPC or fuse writes on the primary RTX 5090. Continue with static source and firmware documentation, and record any implementation/provenance gaps as unknown.
