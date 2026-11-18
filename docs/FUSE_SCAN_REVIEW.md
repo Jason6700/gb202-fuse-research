@@ -55,3 +55,36 @@ Both scans run only on locally cloned source text. The `direct-override` scan ov
 4. Keep the research read-only on the primary RTX 5090. No eFuse programming, voltage fault injection, MMIO writes, firmware patches, or experimental privileged driver loading.
 
 **Conclusion:** no working reversible software-only GB202 SM/L2 unlock has been demonstrated by this scan.
+
+## Follow-up results: GB202-only and whole-tree scans (2026-11-18)
+
+**User-run result, pinned NVIDIA commit `e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9`:**
+
+- `--profile fuse-register` restricted to `*blackwell/gb202/*` and `*kern_gpu_gb202.c`: **9 matches, untruncated**.
+- `--profile direct-override` across the tree: **17 matches, untruncated**.
+
+### GB202 nine-match breakdown
+
+- **Eight lines:** [`gb202/dev_fuse_zb.h` lines 26–33](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/common/inc/swref/published/blackwell/gb202/dev_fuse_zb.h#L26-L33) consist of GSP and SEC2 microcode-version fuse register names and associated fields. These are not compute-resource disable masks.
+- **One line:** [`kern_gpu_gb202.c` lines 355–373](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/nvidia/src/kernel/gpu/arch/blackwell/kern_gpu_gb202.c#L355-L373) defines `gpuIsInternalSkuFuseEnabled_GB202`; despite the comment describing an internal SKU fuse, the **actual implementation simply returns `NV_FALSE` and performs no fuse read**.
+
+### Complete classification of 17 direct-override-profile matches
+
+| Count | Files/architecture | Actual matched constructs | GB202 SM/L2 enable evidence? |
+|---:|---|---|---|
+| 12 | `t234` (3), `gm107` (3), `gb100` (3), `ga100` (3) fuse headers | `FUSE_(ZB_)?STATUS_OPT_DISPLAY` status declarations and fields | **No**: display status, other architectures |
+| 2 | [`kernel-open/nvidia/nv.c` lines 121 and 6756–6763](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/kernel-open/nvidia/nv.c#L6756-L6763) | `TEGRA264_STRAP_NV_FUSE_CTRL_OPT_GPU` and a Tegra `STRAP_SET` request | **No**: Tegra SoC strap handling, not GB202 graphics resource enabling. It *is* an example of a software write on another platform, not a GB202 override. |
+| 1 | [`kern_gpu_gb100.c` line 1752](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/nvidia/src/kernel/gpu/arch/blackwell/kern_gpu_gb100.c#L1743-L1754) | GB100 display-support fuse **read** | **No** |
+| 2 | [`gb10b/dev_fuse.h` and `kern_gpu_arch_gb10b.c`](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/nvidia/src/kernel/gpu/arch/blackwell/kern_gpu_arch_gb10b.c#L44-L48) | GB10B `NV_FUSE_STATUS_OPT_GPC` declaration / offset function | **No**: GPC **status offset** for another chip family, not a resource-enable operation |
+
+The [generated GpuArch HAL table](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/nvidia/generated/g_gpu_arch_nvoc.c#L207-L216) selects `gpuarchGetGpcFuseStatusOffset_GB10B` for **GB10B/GB10C** only, and [`osinit.c`](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/nvidia/arch/nvalloc/unix/src/osinit.c#L1692-L1698) describes this offset as used by certain Tegra PCI integrated GPUs.
+
+**Classification result:** **0 of the 17 inspected source matches demonstrates a GB202 SM/TPC/L2 override**, even though some match the scanner's lexical "direct-override" profile. This is a negative result *within the public source inspected*; it cannot prove the absence of all hidden firmware or silicon mechanisms.
+
+### Provenance caveat and next research boundary
+
+The pinned [NVIDIA source README](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/README.md#L1-L21) identifies this as **Linux open kernel-module version 620.70.06**, which requires separately supplied, version-matched GSP firmware and user-space components. The researcher's actual RTX 5090 runs **Windows driver 621.24**. Therefore, even confirmed behavior in this pinned Linux source does **not** by itself verify Windows driver internals.
+
+A [source search for the static floorsweeping control](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/nvidia/src/kernel/gpu/gr/kernel_graphics.c#L1257-L1271) finds its public header declaration and the client-side `pRmApi->Control` invocation, not a verified public production GB202 provider of the response. Source inspection can locate the client/consumer boundary; it has not established whether the values originate in permanent eFuses, firmware-computed effective masks, or policy-based configuration.
+
+**Next high-value action:** document the GSP/RM control-provider boundary rather than repeatedly scanning unqualified `FUSE_OPT` symbols; continue read-only investigation and seek source-level evidence specific to GB202 before proposing any runtime interaction.
