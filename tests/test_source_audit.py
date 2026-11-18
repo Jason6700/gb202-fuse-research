@@ -26,6 +26,28 @@ class SourceAuditTests(unittest.TestCase):
             (hidden / 'x.txt').write_text('fuse')
             self.assertEqual(mod.audit(Path(tmp)), [])
 
+    def test_focused_profile_ignores_generic_gpc(self):
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp) / 'ctrl2080internal.h'
+            path.write_text('GPC topology\nNvU32 physGpcMask;\nNvU32 tpcMask[32];\n')
+            found = mod.audit(Path(tmp), profile='focused')
+            self.assertEqual(len(found), 2)
+            self.assertEqual([x['line'] for x in found], [2, 3])
+
+    def test_path_glob_filter(self):
+        with TemporaryDirectory() as tmp:
+            (Path(tmp) / 'one.h').write_text('floorsweepingMasks\n')
+            (Path(tmp) / 'two.h').write_text('floorsweepingMasks\n')
+            found = mod.audit(Path(tmp), profile='focused', path_globs=('*two.h',))
+            self.assertEqual([x['file'] for x in found], ['two.h'])
+
+    def test_override_profile_excludes_general_fuse(self):
+        with TemporaryDirectory() as tmp:
+            (Path(tmp) / 'gpu.h').write_text('fuse count\nCTRL_OPT_FUSE_ID\nDISABLE_SW_OVERRIDE\n')
+            found = mod.audit(Path(tmp), profile='override')
+            self.assertEqual(len(found), 2)
+            self.assertEqual([x['line'] for x in found], [2, 3])
+
 
 if __name__ == '__main__':
     unittest.main()
