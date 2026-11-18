@@ -22,7 +22,24 @@ OVERRIDE_PATTERN = (
     r'(?:disable_sw_override|fuse_(?:shadow|override|status|opt)\w*|'
     r'ctrl_opt_\w*|status_opt_\w*|sw_?override\w*|shadow_?fuse\w*)'
 )
-PROFILES = {'broad': BROAD_PATTERN, 'focused': FOCUSED_PATTERN, 'override': OVERRIDE_PATTERN}
+# The original 'override' profile intentionally remains backward-compatible, but
+# includes fuse status/option names that are NOT evidence of an override.
+FUSE_REGISTER_PATTERN = (
+    r'(?:fuse_(?:zb_)?(?:opt|status|ctrl|feature|spare)\\w*|'
+    r'fuse_(?:shadow|override)\\w*|(?:gpu|gpuarch)\\w*fuse\\w*)'
+)
+DIRECT_OVERRIDE_PATTERN = (
+    r'(?:disable_sw_override|sw_?override\\w*|shadow_?fuse\\w*|'
+    r'fuse_?shadow\\w*|fuse_(?:zb_)?(?:ctrl_opt|status_opt)\\w*|'
+    r'ctrl_opt_(?:gpc|tpc|ltc|l2)\\w*)'
+)
+PROFILES = {
+    'broad': BROAD_PATTERN,
+    'focused': FOCUSED_PATTERN,
+    'override': OVERRIDE_PATTERN,  # legacy: includes general fuse registers
+    'fuse-register': FUSE_REGISTER_PATTERN,
+    'direct-override': DIRECT_OVERRIDE_PATTERN,
+}
 TERMS = ('floorsweep', 'fuse', 'gpc', 'tpc', 'ltc', 'l2cache', 'sm_to_gpc', 'override')
 EXCLUDE = {'.git', '.venv', 'build', '__pycache__', 'node_modules'}
 EXTS = {'.h', '.c', '.cc', '.cpp', '.py', '.md', '.txt'}
@@ -81,7 +98,7 @@ def main() -> None:
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--max-matches', type=int, default=500)
     parser.add_argument('--profile', choices=tuple(PROFILES), default='broad',
-                        help='broad (legacy), focused (topology masks), or override')
+                        help='broad, focused, override (legacy), fuse-register, or direct-override')
     parser.add_argument('--path-glob', action='append', default=[],
                         help='Only include matching paths (repeatable), e.g. *ctrl2080internal.h')
     parser.add_argument('--regex', help='Custom case-insensitive regex, overrides profile regex')
