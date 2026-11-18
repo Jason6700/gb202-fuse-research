@@ -16,9 +16,9 @@
 The local baseline also records driver 621.24. The complete JSON, VBIOS value and PCI device metadata remain local, under ignored `reports/`; no personal device capture was committed to this public repository. These values are logical/advertised capabilities, **not** physical fuse measurements or functional tests of disabled hardware.
 
 ## Phase 2 onward
-- [x] Pin a public NVIDIA open-gpu-kernel-modules reference revision (`e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9`) and create a preliminary topology interface catalog. The local researcher's source checkout revision remains to be confirmed.
+- [x] Pin a public NVIDIA open-gpu-kernel-modules reference revision (`e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9`) and create a preliminary topology interface catalog. The local researcher's source checkout has now been confirmed at the same SHA.
 - [ ] Determine provenance of fuse-derived versus effective configuration. Public driver code now confirms retrieval of an internal floorsweeping-mask structure and subsequent queries from cached masks; the original provider remains unidentified.
-- [ ] Document if raw fuse visibility exists for production GB202. A full 145-match legacy source search was completed; architecture-specific review found GB202 `FUSE_ZB_OPT_*` firmware-version declarations, not documented SM/L2 shadow controls. Revised scanner profiles and [source analysis](docs/FUSE_SCAN_REVIEW.md) are available.
-- [ ] Assess whether a reversible software-only SM/L2 override is actually possible.
+- [ ] Document if raw fuse visibility exists for production GB202. Full source scans at the pinned SHA: 145 legacy broad hits; 9 GB202-specific fuse-register hits; 17 whole-tree override-pattern hits, all untruncated. The GB202 matches are eight GSP/SEC2 firmware-version definitions plus an internal-SKU function that returns `NV_FALSE` without a fuse read. None of the 17 override-pattern matches demonstrates a GB202 SM/L2 resource override. See [source classification](docs/FUSE_SCAN_REVIEW.md).
+- [ ] Assess whether a reversible software-only SM/L2 override is actually possible. Next: trace the internal RM/GSP provider of floorsweeping-mask values, recognizing that NVIDIA's pinned *Linux 620.70.06* source is not identical to the Windows 621.24 driver tested.
 
 **Working GB202 SM/L2 unlock: NOT demonstrated.**
