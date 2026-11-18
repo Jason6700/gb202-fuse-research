@@ -49,5 +49,26 @@ class SourceAuditTests(unittest.TestCase):
             self.assertEqual([x['line'] for x in found], [2, 3])
 
 
+    def test_fuse_register_profile_recognizes_blackwell_zb_prefix(self):
+        with TemporaryDirectory() as tmp:
+            (Path(tmp) / 'gb202_fuse.h').write_text(
+                'NV_FUSE_ZB_OPT_FPF_GSP_UCODE1_VERSION\n'
+                'NV_FUSE_ZB_OPT_FPF_SEC2_UCODE1_VERSION\n'
+                'GPC topology\n'
+            )
+            found = mod.audit(Path(tmp), profile='fuse-register')
+            self.assertEqual([x['line'] for x in found], [1, 2])
+
+    def test_direct_override_is_not_equivalent_to_general_fuses(self):
+        with TemporaryDirectory() as tmp:
+            (Path(tmp) / 'gb202_fuse.h').write_text(
+                'NV_FUSE_ZB_OPT_FPF_GSP_UCODE1_VERSION\n'
+                'DISABLE_SW_OVERRIDE\n'
+                'CTRL_OPT_TPC_DISABLE\n'
+            )
+            found = mod.audit(Path(tmp), profile='direct-override')
+            self.assertEqual([x['line'] for x in found], [2, 3])
+
+
 if __name__ == '__main__':
     unittest.main()
