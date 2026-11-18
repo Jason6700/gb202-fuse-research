@@ -17,3 +17,5 @@ private/
 Thumbs.db
 .vscode/
 .idea/
+# Local clone of NVIDIA's separate source repository
+open-gpu-kernel-modules/
