@@ -16,8 +16,8 @@
 The local baseline also records driver 621.24. The complete JSON, VBIOS value and PCI device metadata remain local, under ignored `reports/`; no personal device capture was committed to this public repository. These values are logical/advertised capabilities, **not** physical fuse measurements or functional tests of disabled hardware.
 
 ## Phase 2 onward
-- [ ] Pin NVIDIA open-gpu-kernel-modules source revision and create a control-interface catalog.
-- [ ] Distinguish logical topology, physical/topology masks and fuse-derived/effective configuration.
+- [x] Pin a public NVIDIA open-gpu-kernel-modules reference revision (`e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9`) and create a preliminary topology interface catalog. The local researcher's source checkout revision remains to be confirmed.
+- [ ] Determine provenance of fuse-derived versus effective configuration. Public driver code now confirms retrieval of an internal floorsweeping-mask structure and subsequent queries from cached masks; the original provider remains unidentified.
 - [ ] Document if raw fuse visibility exists for production GB202.
 - [ ] Assess whether a reversible software-only SM/L2 override is actually possible.
 
