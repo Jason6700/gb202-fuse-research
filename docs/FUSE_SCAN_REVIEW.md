@@ -88,3 +88,18 @@ The pinned [NVIDIA source README](https://github.com/NVIDIA/open-gpu-kernel-modu
 A [source search for the static floorsweeping control](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/nvidia/src/kernel/gpu/gr/kernel_graphics.c#L1257-L1271) finds its public header declaration and the client-side `pRmApi->Control` invocation, not a verified public production GB202 provider of the response. Source inspection can locate the client/consumer boundary; it has not established whether the values originate in permanent eFuses, firmware-computed effective masks, or policy-based configuration.
 
 **Next high-value action:** document the GSP/RM control-provider boundary rather than repeatedly scanning unqualified `FUSE_OPT` symbols; continue read-only investigation and seek source-level evidence specific to GB202 before proposing any runtime interaction.
+
+## Scope correction: a GB202 file outside the previous path filter
+
+The user-observed **9 matches** are a correct count for the *specified* path filters (`*blackwell/gb202/*` and `*kern_gpu_gb202.c`), **not** a comprehensive audit of every source file with GB202 implementations in its name.
+
+The previously omitted [`src/nvidia/src/kernel/gpu/gsp/arch/blackwell/kernel_gsp_gb202.c` lines 81–108](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e6a2e01579fbbd1ca2ed43fef2ee2589e9bd8bd9/src/nvidia/src/kernel/gpu/gsp/arch/blackwell/kernel_gsp_gb202.c#L81-L108) contains `kgspReadUcodeFuseVersion_GB202`, a direct `GPU_REG_RD32` read of the **GSP microcode-version fuse**. This is actual public GB202 *fuse-reading code*, but **not** evidence of SM/TPC/L2 disable-mask access or an unlock. It also does not imply that Windows CUDA user mode can read the register.
+
+For a broader source-text check on the same pinned checkout, include both architecture directory and GB202-suffixed files:
+
+```powershell
+git pull --ff-only
+python tools/source_audit.py open-gpu-kernel-modules --profile fuse-register --path-glob "*blackwell/gb202/*" --path-glob "*gb202*" --max-matches 5000 --output reports/gb202-fuses-expanded.json
+```
+
+The expanded scan's results **have not been observed on the user's local checkout yet**. Do not substitute an inferred count.
